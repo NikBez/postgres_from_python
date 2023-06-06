@@ -1,6 +1,21 @@
 import psycopg2
 from time import sleep
 from email_validator import validate_email, EmailNotValidError
+from environs import Env
+
+
+def main():
+    env = Env()
+    env.read_env()
+
+    DB_NAME = env('DB_NAME')
+    DB_USER = env('DB_USER')
+    DB_PASSWORD = env('DB_PASSWORD')
+
+    conn = Connector(DB_NAME, DB_USER, DB_PASSWORD)
+    conn.connect()
+    main_loop(conn)
+    conn.close_connection()
 
 
 class Connector:
@@ -294,7 +309,5 @@ def check_email(email: str):
 
 
 if __name__ == '__main__':
-    conn = Connector('psql_from_python', 'postgres', '167wq%t')
-    conn.connect()
-    main_loop(conn)
-    conn.close_connection()
+    main()
+
